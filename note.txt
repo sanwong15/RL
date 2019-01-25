@@ -1,0 +1,24 @@
+Q-Learning
+
+To Update Q value:
+
+new_Q_value = curr_Q_value + lr*[Reward + discount_rate*(highest_Q_value_amoung_all_possible_action_from_new_state_s') - curr_Q_value]
+
+
+Deep Q-Learning
+# Create a neural network that will approximate given a state, the different Q-Values for each actions
+Input: state
+Function: Deep Q Neural network
+Output: Q_value_action1, Q_value_action2, Q_value_action3
+
+
+Example (DOOM)
+Input: Stack of Four frames
+Output: Vector of Q_value for each possible action in the given state
+=> Take the biggest Q_value => Take that action
+
+How to deal with Temporal Limitation?
+ -> Easiest way: stacked frames
+ -> More advance: LSTM
+
+ 
