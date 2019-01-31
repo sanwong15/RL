@@ -17,8 +17,54 @@ Input: Stack of Four frames
 Output: Vector of Q_value for each possible action in the given state
 => Take the biggest Q_value => Take that action
 
+KEY CONCEPT 1: Temporal Limitation
 How to deal with Temporal Limitation?
  -> Easiest way: stacked frames
  -> More advance: LSTM
+
+ stacked frames -> convolution layers -> exploit spatial relationships in images
+ * convolution layer use ELU as activation function
+
+ Output layer (fully connected layer with linear activation function) => output: Q-value estimation for each action
+
+KEY CONCEPT 2: Experience Replay
+* (a) Avoid forgetting previous experiences
+* (b) Reduce correlations between experiences
+
+For (a):
+* Neural Network tends to forget the previous experiences as it overwrites with new experiences
+ => More efficient to make use of previous experience by learning with it multiple times
+
+ Solution: replay buffer
+ * Stores experience tuples while interacting with the environment -> sample small batch of tuple to feed our neural network
+
+ Overview:
+ agent act in the environment -> record the experience tuples -> store -> sample from the experience storage -> group as batch of experiences -> DQN
+
+ * What's it good for? : Prevents the network from only learning about what it has immediately done
+
+ For (b):
+ * Action -> affects next state
+ # Result: Output sequence experience tuples are highly correlated
+
+ => Train a network in sequential order => Risk the agent being influenced by the effect of this correlation
+
+ * By REPLAY BUFFER => break the correlation (stop learning while interacting with the environment)
+
+ Baseline: try different things and play randomly to explore the state space -> save experiences in replay buffer
+
+Improvements to DQN : DDQN (Double Q-Learning)
+Problem of DQN: It might not converge (some actions maybe overestimated)
+Solution: Decouple the action choice from the target Q-value Generation
+
+How:
+Step 1
+Two separate networks (1) Primary network to select action (2) Target network to generate a Q-value for that action
+Step 2
+Synchronize these networks (copy weights from the primary network to target network for every N training steps
+
+
+
+
 
  
