@@ -94,8 +94,41 @@ Step 3 : Normalize pixel values
 Step 4 : Resize preprocessed frame 
 '''
 def preprocess_frame(frame):
-	# Step 1: Grayscale
-	# Grayscale can be achieve 
+	# Step 1: Grayscale (handled by the environment)
+	# Step 2: Crop the screen
+	cropped_frame = frame[30:-10,30:-30]
+
+	# Step 3: Normalized frame
+	normalized_frame = cropped_frame/255.0
+
+	# Step 4: Resize
+	preprocess_frame = transform.resize(normalized_frame, [84,84])
+
+	return preprocess_frame
+
+# Define number of frame to be stacked
+stack_size = 4
+
+# Initialize deque with ZERO-IMAGES
+# collections.deque() is a double-ended queue. Can be used to add or remove elements from both ends
+stacked_frames = deque([np.zeros((84,84),dtype=np.int) for i in range(stack_size)], maxlen=4)
+
+def stack_frames(stacked_frames, state, is_new_episode):
+	frame = preprocess_frame(state)
+
+	if is_new_episode:
+		# Clear the stacked_frames
+		stacked_frames = deque([np.zeros((84,84), dtype=np.int) for i in range(stack_size)], maxlen=4)
+
+		# Put the frame into the stacked frame
+		stacked_frames.append(frame)
+		stacked_frames.append(frame)
+		stacked_frames.append(frame)
+		stacked_frames.append(frame)
+
+		
+
+
 
 
 
