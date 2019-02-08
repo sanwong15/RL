@@ -215,6 +215,200 @@ class DQNetwork:
 			# Optimizer
 			self.optimizer = tf.train.RMSPropOptimizer(self.learning_rate).minimize(self.loss)
 
+# Reset Graph
+tf.reset_default_graph()
+
+DQNetwork = DQNetwork(state_size, action_size, learning_rate)
+
+class Memory():
+	def __init__(self, max_size):
+		self.buffer = deque(maxlen= max_size)
+
+	def add(self, experience):
+		self.buffer.append(experience)
+
+	def sample(self, batch_size):
+		buffer_size = len(self.buffer)
+		index = np.random.choice(np.arrange(buffer_size), size=batch_size, replace=False)
+
+		return [self.buffer[i] for i in index]
+
+memory = Memory(max_size= memory_size)
+
+# Render new Env
+game.new_episode()
+
+for i in range(pretrain_length):
+	if i == 0:
+		# For the first step
+		# Need a state
+		state = game.get_state().screen_buffer
+		state, stacked_frames = stack_frames(stacked_frames, state, True)
+
+	# Random Action
+	action = random.choice(possible_actions)
+
+	# Get Rewards
+	reward = game.make_action(action)
+
+	# Check if episode is finished
+	done = game.is_episode_finished
+
+	if done:
+		# Episode finished
+		next_state = np.zeros(state.shape)
+
+		# Add experience to memory
+		memory.add((state, action, reward, next_state, done))
+
+		# Start a new episode
+		game.new_episode()
+
+		# get state
+		state = game.get_state().screen_buffer
+
+		state, stacked_frames = stack_frames(stacked_frames, state, True)
+	else:
+		# Episode not finished
+		next_state = game.get_state().screen_buffer
+		next_state, stacked_frames = stack_frames(stacked_frames, next_state, False)
+
+		# Add experience to memory
+		memory.add((state, action, reward, next_state, done))
+
+		# Update state
+		state = next_state
+
+
+# Set up Tensorboard
+# set up Tensorboard writer
+writer = tf.summary.FileWriter("/tensorboard/dqn/1")
+
+# Losses
+tf.summary.scalar("Loss", DQNetwork.loss)
+
+# write output
+write_op = tf.summary.merge_all()
+
+
+# Train Agent
+'''
+(1) Init weight
+(2) Init Env
+(3) Init Decay rate
+
+FOR-LOOP (Episode) for each episode
+Make new episode
+Set step to ZERO
+Observe the first state s_0
+
+While-Loop (while below max_steps):
+Increase decay_rate
+With prob epsilon: select a random action a_t, with prob (1-epsilon) select a_t = argmax_a Q(s_t, a)
+Execute action a_t, observe reward r_t+1 and get new state s_t+1
+Store Transition (to Experience Buffer)
+Sample random mini-batch
+Set Predicted_next_state_Q_value = r (terminate state: episode ends) OR Predicted_next_state_Q_value = r + Decay_rate(max_a: Q(next_state, next_state_all_possible_action)
+Make Gradient Descent Step with Loss: (Predict_next_state_Q_value - Current_state_Q_value) power to 2
+
+
+END-WHILE
+
+END-FOR
+'''
+
+def predict_action(explore_start, explore_stop, decay_rate, decay_step, state, actions):
+	# Epsilon Greedy
+	# Random Number
+	exp_exp_tradeoff = np.random.rand()
+
+	explore_prob = explore_stop + (explore_start - explore_stop)*np.exp(-decay_rate*decay_step)
+
+	if (explore_prob > exp_exp_tradeoff):
+		# Make random action (exploration)
+		action = random.choice(possible_actions)
+
+	else:
+		# Get action from Q-network (exploitation)
+		# Estimate the Qs value state
+		Qs = sess.run(DQNetwork.output, feed_dict={DQNetwork.inputs: state.reshape((1, *state.shape))})
+		# Take Biggest Q value -> Best action
+		choice = np.argmax(Qs)
+		action = possible_actions[int(choice)]
+
+
+	return action, explore_prob
+
+# Training and Saving
+# Saver will help us to save our model
+saver = tf.train.Saver()
+
+
+if training == True:
+	with tf.Session() as sess:
+		# Init the variables
+		sess.run(tf.global_variables_initializer())
+
+		# Init decay rate
+		decay_step = 0
+
+		game.init()
+
+
+		for episode in range(total_episodes):
+			# set step to 0
+			step = 0
+
+			episode_rewards = [] # Init rewards of the episode
+
+			# New episode
+			game.new_episode()
+			# Get state
+			state = game.get_state().screen_buffer
+
+			# Stack Frame
+			state, stacked_frames = stack_frames(stacked_frames, state, True)
+
+			while step < max_steps:
+				# Update step
+				step += 1
+
+				# Increase decay_step
+				decay_step += 1
+
+
+				# Predict action to take and exe action
+				action, explore_prob = predict_action(explore_start, explore_stop, decay_rate, decay_step, state, possible_actions)
+
+				# Exe the action
+				reward = game.make_action(action)
+
+				# Check if episode is finished
+				done = game.is_episode_finished()
+
+				# Append rewards
+				episode_rewards.append(reward)
+
+				# If game finished
+				if done:
+					next_state = np.zeros((84,84), dtype=np.int)
+					next_state, stacked_frames = stack_frames(stacked_frames, next_state, False)
+
+					# set step to max_steps to end episode
+					step = max_steps
+
+					# Get total_reward
+					total_reward = np.sum(episode_rewards)
+
+					print('Episode: {}'.format(episode), 'Total reward: {}'.format(total_reward), 'Training loss: {:.4f}'.format(loss), 'Explore P: {:.4f}'.format(explore_prob))
+
+					memory.add((state, action, reward, next_state, done))
+
+				else:
+					
+
+
+
 
 
 
