@@ -1,0 +1,181 @@
+PPO-deepCarla Overview
+==========================================================
+camera_config.py
+- Set (baseline_rigs) and (three_cam_rig) camera setting
+	- field_of_view
+	- capture_width
+	- capture_height
+	- relative_position
+
+==========================================================
+config.py
+- parameters (for Network)
+	- NUM_TARGETS
+	- BASELINE_IMAGE_SHAPE
+
+- parameters (for Normalization)
+	- SPIN_THRESHOLD
+	- SPEED_NORMALIZATION_FACTOR
+	- SPIN_NORMALIZATION_FACTOR
+	- MEAN_PIXEL : np.array
+
+- parameters (HDF5)
+	- FRAMES_PER_HDF5_FILE
+	- MAX_RECORDED_OBSERVATIONS
+	- NUM_TRAIN_FILES_TO_QUEUE
+
+- parameters (OS)
+
+- get_deepdrive_dir()
+	return path to deepdrive
+
+- _ensure_python_bin_config():
+	NOT SURE
+
+# Setup Parameters
+- DEEPDRIVE_DIR
+- DEEPDRIVE_CONFIG_DIR
+
+# Set Data Directories
+# Set Weights
+# Set URLs
+
+==========================================================
+logs.py
+
+- get_log
+	return ret: ret = logging.getLogger(namespace)
+
+- set_level: set log_level
+
+- log_manual
+
+==========================================================
+dashboard.py
+- dashboard_fn(dash_queue):
+	list all information on dashboard
+
+
+==========================================================
+deepCarla.py
+- start(1.experiment_name
+		2.env
+		3.sess
+		4.start_dashboard
+		5.should_benchmark
+		6.cameras
+		7.use_sim_start_command
+		8.render
+		9.fps)
+
+	- env = gym.make(env) -> gym.wrappers.Monitor
+	- env.seed(0)
+
+	# Define deepCarla env object
+	dc_env = env.env
+	- set dc_env values
+		- fps
+		- experiment
+		- period
+		- set_use_sim_start_command
+		- open_sim()
+
+	- env.reset()
+	return env
+
+==========================================================
+random_name.py
+- List of names for the command control
+
+==========================================================
+tf_utils.py
+- define IMAGE placeholder
+- define DEPTH placeholder
+
+- _image_op(x):
+	# perform gamma corrections
+
+- _depth_op(x):
+	return normalized, heatmap X
+
+- _normalize_op(x):
+	return normalized X
+
+- _heatmap_op(x):
+	construct GREEN, BLUE, RED layer and stack it together
+
+- # operate on IMAGE and DEPTH
+image_op = _image_op(IMAGE)
+depth_op = _depth_op(DEPTH)
+
+- preprocess_image(image, sess, trace=False):
+	return _run_op(sess, image_op .... )
+
+- preprocess_depth(depth, sess, trace=False):
+	return _run_op(sess, depth_op .... )
+
+- _run_op(sess, op, X, x, trace=False, op_name='tf_op'):
+	# A General function that run a sess (i.e: ret = sess.run(op, ...))
+	return ret
+
+- _main():
+	preprocess_image
+	preprocess_depth
+
+==========================================================
+utils.py
+- normalize(a):
+	return a: normalized_a
+
+- preprocess_image(image):
+	return preprocessed_image
+
+- preprocess_depth(depth):
+	return preprocessed_depth
+
+- depth_heatmap(depth):
+	# Calculate R G and B layer according to depth
+	# ret = stack RGB
+	return ret
+
+- obj2dict(obj, exclude=None):
+	
+- save_hdf5(out, filename):
+	
+- save_hdf5_thread(out, filename):
+
+- read_hdf5 (filename, save_png_dir=None):
+
+- save_camera(image, depth, save_dir, name):
+
+- show_camera(image, depth):
+
+- read_hdf5_manual(recording_dir):
+
+- download(url, directory, warn_existing=True, overwrite=False):
+
+- dir_has_stuff(path):
+
+- file_has_stuff(path):
+
+- has_stuff(path, warn_existing=False, overwrite=False):
+	return True/False
+
+- ensure_executable(path):
+	
+- get_sim_bin_path():
+	retun path
+
+- run_command(cmd, cwd=None, env=None, throw=True, verbose=False, print_errors=True):
+	return result, process.returncode
+
+
+
+
+
+
+
+
+
+
+

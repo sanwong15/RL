@@ -1,7 +1,9 @@
 import csv
 import subprocess
-import deepdrive_client
-import deepdrive_capture
+
+# From deepdrive (replace with
+#import deepdrive_client   (send information/connection: steering. brake etc)
+#import deepdrive_capture  (env info update in a data block)
 import os
 import queue
 import random
@@ -91,7 +93,7 @@ def gym_action(steering=0, throttle=0, brake=0, handbrake=0, has_control=True):
     return action
 
 # noinspection PyMethodMayBeStatic
-class DeepDriveEnv(gym.Env):
+class DeepCarlaEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, preprocess_with_tensorflow=False):
@@ -477,11 +479,17 @@ class DeepDriveEnv(gym.Env):
         log.info('episode_time %r', self.score.episode_time)
         log.info('wrote results to %s', os.path.normpath(filename))
 
+    # release_agent_control: Handle client-server connection error (Leave the car in auto-run mode: self decision making)
+    '''
     def release_agent_control(self):
         self.has_control = deepdrive_client.release_agent_control(self.client_id) is not None
+    '''
 
+    # Boolean function: Check if a car agent is being used
+    '''
     def request_agent_control(self):
         self.has_control = deepdrive_client.request_agent_control(self.client_id) == 1
+    '''
 
     # noinspection PyAttributeOutsideInit
     def set_forward_progress(self):
@@ -500,6 +508,8 @@ class DeepDriveEnv(gym.Env):
         self.start_time = time.time()
         log.info('Reset complete')
 
+    # Change Camera Viewpoint/Mountpoint [Position, FOE, Aspect ratio etc]
+    '''
     def change_viewpoint(self, cameras, use_sim_start_command):
         self.use_sim_start_command = use_sim_start_command
         deepdrive_capture.close()
@@ -508,6 +518,7 @@ class DeepDriveEnv(gym.Env):
         self.close_sim()  # Need to restart process now to change cameras
         self.open_sim()
         self.connect(cameras)
+    '''
 
     def __del__(self):
         self.close()
@@ -518,9 +529,12 @@ class DeepDriveEnv(gym.Env):
             self.dashboard_queue.close()
         if self.dashboard_process is not None:
             self.dashboard_process.join()
-        deepdrive_capture.close()
-        deepdrive_client.release_agent_control(self.client_id)
-        deepdrive_client.close(self.client_id)
+
+        # DeepCarla may not need the following
+        # deepdrive_capture.close()
+        # deepdrive_client.release_agent_control(self.client_id)
+        # deepdrive_client.close(self.client_id)
+
         self.client_id = 0
         if self.sess:
             self.sess.close()
@@ -581,6 +595,7 @@ class DeepDriveEnv(gym.Env):
             ret.append(camera_out)
         return ret
 
+    #
     def get_observation(self):
         try:
             obz = deepdrive_capture.step()

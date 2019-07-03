@@ -1,0 +1,96 @@
+OUTLINE
+
+agent.py
+- Define Agent Object
+	- init:
+		- action_space
+		- previous_action
+		- step
+		- env
+
+		For toggling random action
+		- should_record_recovery_from_random_action
+		- random_action_count
+		- non_random_action_count
+		- semirandom_sequence_step
+		- action_count
+		- recorded_obz_count
+		- performing_random_actions
+		- path_follower_mode
+		- recording_dir
+
+
+		Recording state
+		- should_record
+		- sess_dir
+		- obz_recording
+
+		Net
+		- sess
+		- use_frozen_net
+		- net_path
+
+	- act(obz, reward, done):
+		- return action
+
+	- get_next_action(obz, y) # y: self.get_net_out(image)
+		return action # action = Action(smoothed_steering, desired_throttle)
+
+	- maybe_save:
+		return null: save hdf5 file
+
+	- toggle_random_action:
+		return action #random_action
+
+	- load_net:
+		return null: set net to graph or restore session
+
+	- close:
+		return null: sess.close()
+
+	- get_net_out(image):
+		return net_out: network output with image as input
+
+	- preprocess_obz(obz):
+		return obz: obz = camera image
+
+	- set_random_action_repeat_count:
+		return null: set random_action_count
+
+	- run:
+		- init reward, episode_done, max_episodes, tf_config, sess
+		- get cameras
+		- set gym_env
+		- set custom_env (# dd_env = gym_env)
+		- set agent
+		- close agent
+		- set session_done
+
+	- randomize_cameras(cameras):
+		return null: set camera relative_position, field_of_view, capture_height, capture_width
+
+	- random_use_sim_start_command(should_rotate_sim_types):
+		return use_sim_start_command
+
+	- ensure_baseline_weights(net_path):
+		return net_path
+
+layers.py
+ - conv(input, kernel, biases, k_h, k_w, c_o, s_h, s_w, padding, group)
+ # k_h, k_w: kernel_size # s_h, s_w: stride_size # group == 1: convolve in one shoot # group != 1: convolve split into 3 and concat output
+
+ - conv2d(x, name, num_features, kernel_size, stride, group)
+
+ - linear(x, name, size): return W*X + b
+
+ - max_pool_2x2(x): return tf.nn.max_pool
+
+ - lrn(x): return tf.nn.local_response_normalization
+
+ net.py
+ - Class Net
+ 	- init
+ 		# Set up Network Structure
+ 		- conv1 (relu) -> lrn1 -> maxpool1 -> conv2 (relu) -> lrn2 -> maxpool2 -> conv3 -> conv4 -> conv5 -> maxpool5 -> fc6(relu) -> DropOut -> fc7(relu) -> DropOut -> fc8(linear)
+
+

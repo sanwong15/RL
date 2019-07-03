@@ -1,0 +1,27 @@
+# import deepdrive_client
+# import deepdrive_capture
+
+# Need to find out what these do
+
+class Score:
+- parameters
+	- total = 0
+	- gforce_penalty = 0
+	- lane_deviation_penalty = 0
+	- progress_reward = 0
+	- got_stuck = False
+
+- Init
+	- self.start_time = time.time()
+	- self.end_time = None
+	- self.episode_time = 0
+
+class Action(object):
+	- Init
+		- self.steering
+		- self.throttle
+		- self.brake
+		- self.handbrake
+		- self.has_control
+
+	

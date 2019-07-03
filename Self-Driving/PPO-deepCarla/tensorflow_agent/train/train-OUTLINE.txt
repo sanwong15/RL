@@ -1,0 +1,98 @@
+train.py
+- visualize_model(model, y)
+- visualize_gradients(grads_and_vars)
+- run(resume_dir=None, recording_dir=c.RECORDING_DIR)
+	# init
+	- sess_train_dir
+	- sess_eval_dir
+	- batch_size
+	- XY placeholder
+	- define model from net.py
+	- l2_norm
+	- total_loss
+	- starter_learning_rate
+	- learning_rate
+	- tf.train.AdamOptimizer
+	- grads_and_vars
+	- visualize_model
+	- visualize_gradients
+	- summary_op
+	- update_ops
+
+	- tf.train.Saver(pretrained_var_map) -> alexnet_saver
+
+	# Train
+	- restore CKPT_PATH
+	- define saver = tf.train.Saver()
+	- define sv = tf.train.Supervisor
+	- define eval_sw = tf.summary.FileWriter
+	- define train_dataset / eval_dataset / config
+
+	while True loop:
+	- get next training data: images, targets # images and targets array/list
+	- resize image
+	- set feed_dict: x: images, y: targets => sess.run([train_op, summary_op], feed_dict)
+	=> step = model.global_step.eval()
+
+	- Define losses = []
+	- for images, targets in eval_dataset: (1) preds (2) losses
+	- define summary = tf.Summary()
+	- summary.value.add
+	- eval_sw.add_summary
+	- eval_sw.flush()
+
+
+data_utils.py
+Class BackgroundGenerator(threading.Thread):
+	init
+	- queue
+	- generator
+	- daemon
+	- should_shuffle
+	- cv
+	- start()
+
+
+	run(self):
+		return null # Getting data to the queue
+
+	- get_files_names(hdf5_path, train=True):
+		return files
+
+	- load_files(h5_filesname):
+		return out_images, out_targets # in array/list format
+
+	- normalize_frame(frame):
+		# frame is an dictionary object
+		return spin, direction, speed, speed_change, steering, throttle
+
+	- file_loader(file_stream):
+		return null: yield load_file(h5_filename)
+
+	- batch_gen()
+		- gen = BackgroundGenerator
+		return yield images[...], targets[...]
+
+Class Dataset(object):
+	init
+	- _files
+	- log
+
+	iterate_once(self, batch_size):
+		return : yield from batch_gen(file_stream(), batch_size)
+
+
+	iterate_forever(self, batch_size):
+		return : yield from batch_gen(file_stream(), batch_size)
+
+	get_dataset(hdf5_path, log, train=True):
+		return Dataset(file_names, log)
+
+
+	run():
+		- set hdf5_path
+		- set dataset
+		
+
+
+

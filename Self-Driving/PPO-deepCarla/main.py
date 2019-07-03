@@ -9,7 +9,7 @@ import time
 import camera_config
 import config as c
 import logs
-import deepdrive
+import deepCarla
 
 
 def main():
@@ -69,13 +69,13 @@ def main():
         episode_count = 1
         gym_env = None
         try:
-            gym_env = deepdrive.start(args.experiment_name, args.env_id, fps=args.fps)
+            gym_env = env_util.start(args.experiment_name, args.env_id, fps=args.fps)
             log.info('Path follower drive mode')
             for episode in range(episode_count):
                 if done:
                     gym_env.reset()
                 while True:
-                    action = deepdrive.action(has_control=False)
+                    action = deepCarla.action(has_control=False)
                     obz, reward, done, _ = gym_env.step(action)
                     if render:
                         gym_env.render()

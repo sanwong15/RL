@@ -3,16 +3,16 @@ from gym.envs.registration import register
 # TODO: Move this into the deepdrive package
 
 register(
-    id='DeepDrive-v0',
-    entry_point='gym_deepdrive.envs.deepdrive_gym_env:DeepDriveEnv',
+    id='DeepCarla-v0',
+    entry_point='gym_deepCarla.envs.deepCarla_gym_env:DeepCarlaEnv',
     kwargs=dict(
         preprocess_with_tensorflow=False,
     ),
 )
 
 register(
-    id='DeepDrivePreproTensorflow-v0',
-    entry_point='gym_deepdrive.envs.deepdrive_gym_env:DeepDriveEnv',
+    id='DeepCarlaPreproTensorflow-v0',
+    entry_point='gym_deepCarla.envs.deepCarla_gym_env:DeepCarlaEnv',
     kwargs=dict(
         preprocess_with_tensorflow=True,
     ),
