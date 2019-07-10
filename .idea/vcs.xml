@@ -2,5 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Self-Driving/reference/carla-rl" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Self-Driving/reference/deepdrive" vcs="Git" />
   </component>
 </project>
