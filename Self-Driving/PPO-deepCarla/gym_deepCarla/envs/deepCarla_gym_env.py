@@ -751,7 +751,7 @@ class DeepCarlaEnv(gym.Env):
             self.release_agent_control()
 
 
-class DeepDriveRewardCalculator(object):
+class DeepCarlaRewardCalculator(object):
     @staticmethod
     def clip(reward):
         # time_passed not parameter in order to set hard limits on reward magnitude
