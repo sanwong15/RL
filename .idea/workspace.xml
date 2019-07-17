@@ -2,25 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="01a411c6-1014-4e23-824c-ac41b4710680" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/action.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/camera.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/driving_style.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/graphics.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/gym_env.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/reward_calculator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/score.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/sim_args.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/uepy_client.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/view_mode.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/sim_v3/world.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/tensorflow_agent/action_jitterer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/tensorflow_agent/common.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Self-Driving/baseline-model/preception/vision/lanelines/lanelinefinder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/gym_deepCarla/envs/deepCarla_gym_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/gym_deepCarla/envs/deepCarla_gym_env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/tensorflow_agent/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/tensorflow_agent/agent.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/tensorflow_agent/net.py" beforeDir="false" afterPath="$PROJECT_DIR$/Self-Driving/PPO-deepCarla/tensorflow_agent/net.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Self-Driving/baseline-model/preception/vision/lanelines/lanelinefinder.py" beforeDir="false" afterPath="$PROJECT_DIR$/Self-Driving/baseline-model/preception/vision/lanelines/lanelinefinder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Self-Driving/reference/deepdrive" beforeDir="false" afterPath="$PROJECT_DIR$/Self-Driving/reference/deepdrive" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Self-Driving/reference/deepdrive/gym_deepdrive/envs/deepdrive_gym_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/Self-Driving/reference/deepdrive/gym_deepdrive/envs/deepdrive_gym_env.py" afterDir="false" />
     </list>
@@ -89,8 +71,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Self-Driving/baseline-model/preception/vision/lanelines/lanelinefinder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="532">
-              <caret line="136" column="77" selection-start-line="136" selection-start-column="77" selection-end-line="136" selection-end-column="77" />
+            <state relative-caret-position="62">
+              <caret line="118" lean-forward="true" selection-start-line="118" selection-end-line="118" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -417,8 +399,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Self-Driving/baseline-model/preception/vision/lanelines/lanelinefinder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="532">
-          <caret line="136" column="77" selection-start-line="136" selection-start-column="77" selection-end-line="136" selection-end-column="77" />
+        <state relative-caret-position="62">
+          <caret line="118" lean-forward="true" selection-start-line="118" selection-end-line="118" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>

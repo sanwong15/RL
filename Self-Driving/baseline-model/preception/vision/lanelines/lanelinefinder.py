@@ -123,6 +123,7 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=2):
             length = math.sqrt( (x1-x2)**2 + (y1-y2)**2 )
 
             if not math.isnan(slope):
+                # Add length requirement to determine if it is a lane
                 if length > 50:
                     if slope > 0:
                         positive_slope_points.append([x1, y1])
@@ -135,3 +136,17 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=2):
                         negative_slope_points.append([x2, y2])
 
                         negative_slope_intercept.append([slope, y1-slope*x1])
+
+    # For case where we currently both arrays (slope and intercept) are empty
+    # Waive length requirement
+
+    # 1 positive_slope_points array is empty
+    if not positive_slope_points:
+        for line in lines:
+            for x1, y1, x2, y2 in line:
+                slope = (y1 - y2) / (x1 - x2)
+                if slope > 0:
+                    positive_slope_points.append([x1, y1])
+                    positive_slope_points.append([x2, y2])
+
+                    positive_slope_intercept.append([slope, y1-slope*x1])
