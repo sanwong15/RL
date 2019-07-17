@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 import os
 import math
+from sklearn.linear_model import LinearRegression
 
 
 
@@ -175,14 +176,75 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=2):
     #positive_slope_points = np.array(positive_slope_points)
     #negative_slope_points = np.array(negative_slope_points)
 
+
+    # Find/Summarize Line candidate and represent in Coef and Intercept format
     pos_coef, pos_intercept = find_line_fit(positive_slope_intercept)
     neg_coef, neg_intercept = find_line_fit(negative_slope_intercept)
 
     # Get intersection point in order to draw a line
     intersection_x_coord = intersection_x(pos_coef, pos_intercept, neg_coef, neg_intercept)
 
+    # Draw Line on image
     draw_linear_regression_line(pos_coef, pos_intercept, intersection_x_coord, img)
     draw_linear_regression_line(neg_coef, neg_intercept, intersection_x_coord, img)
+
+
+# NOTE: No use at this point
+def find_linear_regression_line(points):
+    # find a linear regression line from points
+
+    # Separate points into X and Y to fit LinearRegression model
+    points_x = [[point[0]] for point in points]
+    points_y = [point[1] for point in points]
+
+    # Fit points to LinearRegression line
+    clf = LinearRegression().fit(points_x, points_y)
+
+    # Get parameters from line
+    coef = clf.coef_[0]
+    intercept = clf.intercept_
+    print("Coefficients: ", coef, "Intercept: ", intercept)
+
+    return coef, intercept
+
+
+# MAIN FUNCTION TO BE CALLED (Pipeline function)
+def draw_lane_lines(image):
+    # Input: original image (collect from front facing car camera)
+    # Output: Detect lane overlay on the original image
+
+    imshape = image.shape
+
+    # Step 1: Greyscale
+    greyscaled_image = grayscale(image)
+
+    # Step 2: Gaussian Blur
+    blurred_grey_image = gaussian_blur(greyscaled_image, 5)
+
+    # Step 3: Canny edge detection
+    edges_image = canny(blurred_grey_image, 50, 150)
+
+    # Step 4: Mask edges image
+    border = 0
+    vertices = np.array([[(0, imshape[0]), (465, 320), (475, 320), (imshape[1], imshape[0])]], dtype=np.int32)
+    edges_image_with_mask = region_of_interest(edges_image, vertices)
+    bw_edges_image_with_mask = cv2.cvtColor(edges_image_with_mask, cv2.COLOR_GRAY2BGR)
+
+    # Step 5: Hough Lines detection
+    rho = 2
+    theta = np.pi/180
+    threshold = 45
+    min_line_len = 40
+    max_line_gap = 100
+    lines_image = hough_lines(edges_image_with_mask, rho, theta, threshold, min_line_len, max_line_gap)
+
+    # Step 6: Convert Hough from single channel to RGB to prepare for weighted
+    hough_rgb_image = cv2.cvtColor(lines_image, cv2.COLOR_GRAY2BGR)
+
+    # Step 7: Combine lines image with original image
+    final_image = weighted_img(hough_rgb_image, image)
+
+    return final_image
 
 
 
