@@ -3,7 +3,6 @@ import matplotlib.image as mpimg
 import numpy as np
 import cv2
 import os
-%matplotlib inline
 import math
 
 
@@ -58,7 +57,7 @@ def intersection_x(coef1, intercept1, coef2, intercept2):
     x = (intercept2-intercept1)/(coef1-coef2)
     return x
 
-def draw_linear_regression_line(coef, intercept, intersection_x, img, imshape=[540, 960], color=[255, 0, 0], thickness=2)
+def draw_linear_regression_line(coef, intercept, intersection_x, img, imshape=[540, 960], color=[255, 0, 0], thickness=2):
     # Get starting and ending points of regression on line, ints
     print("Coef: ", coef, "Intercept: ", intercept, "intersection_x: ", intersection_x)
     point_one = (int(intersection_x), int(intersection_x * coef + intercept))
@@ -75,6 +74,7 @@ def draw_linear_regression_line(coef, intercept, intersection_x, img, imshape=[5
 
 def find_line_fit(slope_intercept):
     # slope_intercept: an array [[slope, intercept], [slope, intercept] ... ]
+    # return a line representation (slope, intercept) to summarize a group of lines
 
     # Init Array
     kept_slopes = []
@@ -117,6 +117,7 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=2):
     positive_slope_intercept = []
     negative_slope_intercept = []
 
+    # STEP 1: We set a length requirement = 50
     for line in lines:
         for x1, y1, x2, y2 in line:
             slope = (y1-y2) / (x1-x2)
@@ -137,6 +138,7 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=2):
 
                         negative_slope_intercept.append([slope, y1-slope*x1])
 
+    # STEP 2: if none of the line detected actually pass the length requirement => we waive this requirement
     # For case where we currently both arrays (slope and intercept) are empty
     # Waive length requirement
 
@@ -150,3 +152,39 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=2):
                     positive_slope_points.append([x2, y2])
 
                     positive_slope_intercept.append([slope, y1-slope*x1])
+
+    # 2 negative_slope_points array is empty
+    if not negative_slope_points:
+        for line in lines:
+            for x1, y1, x2, y2 in line:
+                slope = (y1 - y2) / (x1 - x2)
+                if slope < 0:
+                    negative_slope_points.append([x1, y1])
+                    negative_slope_points.append([x2, y2])
+
+                    negative_slope_intercept.append([slope, y1-slope*x1])
+
+
+    # STEP 3: What if after we waive the length requirement and still got nothing -> we just tell the driver we can't find line
+    if not positive_slope_points:
+        print("positive_slope_points still empty")
+
+    if not negative_slope_points:
+        print("negative_slope_points still empty")
+
+    #positive_slope_points = np.array(positive_slope_points)
+    #negative_slope_points = np.array(negative_slope_points)
+
+    pos_coef, pos_intercept = find_line_fit(positive_slope_intercept)
+    neg_coef, neg_intercept = find_line_fit(negative_slope_intercept)
+
+    # Get intersection point in order to draw a line
+    intersection_x_coord = intersection_x(pos_coef, pos_intercept, neg_coef, neg_intercept)
+
+    draw_linear_regression_line(pos_coef, pos_intercept, intersection_x_coord, img)
+    draw_linear_regression_line(neg_coef, neg_intercept, intersection_x_coord, img)
+
+
+
+
+
