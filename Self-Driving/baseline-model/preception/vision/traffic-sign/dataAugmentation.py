@@ -31,7 +31,7 @@ def augmentation(X, y):
 
     return X_aug, y_aug
 
-def motion_blue(X, y, kernel_size):
+def motion_blur(X, y, kernel_size):
     print("input X shape: ", X.shape)
     X_out = np.empty((X.shape)).astype('uint8')
     print("X_out shape: ", X_out.shape)
@@ -51,9 +51,3 @@ def save_augmented_data(X,y,path):
     d = {"features": X.astype('uint8'), "labels": y}
     with open(path, 'wb') as handle:
         pickle.dump(d, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-
-
-
-
-

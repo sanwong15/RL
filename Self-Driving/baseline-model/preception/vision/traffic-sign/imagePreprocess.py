@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 
-def pre_processing_single_img (img):
+def pre_processing_single_img(img):
 
     img_y = cv2.cvtColor(img, (cv2.COLOR_BGR2YUV))[:,:,0]
     img_y = (img_y / 255.).astype(np.float32)

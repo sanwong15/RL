@@ -53,11 +53,5 @@ def LeNet(x, weights, biases, apply_dropout):
     fc1 = tf.cond(apply_dropout, lambda: tf.nn.dropout(fc1, keep_prob=0.6), lambda: fc1)
     logits = tf.matmul(fc1, weights[layer]) + biases[layer]
 
-
-    # Extra Layers (Currently Disabled)
-    # Layer 4: Fully Connected. Input = 512, Output = 700
-    fc
-
-
     return logits
 
