@@ -1,7 +1,7 @@
 import tensorflow as tf
 from LeNetArch import LeNet
 from sklearn.utils import shuffle
-from dataAugmentation import augmentation, motion_blue
+from dataAugmentation import augmentation, motion_blue, save_augmented_data
 from imagePreprocess import pre_processing_single_img, pre_processing
 
 
@@ -55,25 +55,93 @@ def evaluate(X_data, y_data):
         total_accuracy += (accuracy * len(batch_x))
     return total_accuracy / num_examples
 
-def preprocessDataAugmentationCombine(X_data, y_data):
-    X_data_p = pre_processing(X_data)
-    y_data_p = y_data
+
+def preprocessDataAugmentation(X_data, y_data):
+    # 1. Augmentation
+    X_data_aug, y_data_aug = augmentation(X_data, y_data)
+
+    # 2. Save Augmentated and Motion Blur data first
+    path = "./data/traffic-signs-data/train_aug.p"
+    save_augmented_data(X_data_aug, y_data_aug, path)
+
+    # 3. preprocess (normalization, grayscale)
+    X_data_aug_p = pre_processing(X_data_aug)
+    y_data_aug_p = y_data_aug_mb
+
+    # 4. Save preprocess augmented motion blur data
+    path = "./data/traffic-signs-data/train_aug_p.p"
+    save_augmented_data(X_data_aug_p, y_data_aug_p, path)
+
+    return X_data_aug_p, y_data_aug_p
 
 
-    X_data_p_aug, y_data_p_aug = augmentation(X_data_p, y_data_p)
-    X_data_p_mb, y_data_p_mb = motion_blur(X_data_p_aug, y_data_p_aug, 4)
 
+
+def preprocessDataAugmentationMotionBlur(X_data, y_data):
+    # 1. Augmentation
+    X_data_aug, y_data_aug = augmentation(X_data, y_data)
+
+    # 2. Motion Blur
+    X_data_aug_mb, y_data_aug_mb = motion_blur(X_data_aug, y_data_aug, 4)
+
+    # 3. Save Augmentated and Motion Blur data first
+    path = "./data/traffic-signs-data/train_aug_mb.p"
+    save_augmented_data(X_data_aug_mb, y_data_aug_mb, path)
+
+    # 4. preprocess (normalization, grayscale)
+    X_data_aug_mb_p = pre_processing(X_data_aug_mb)
+    y_data_aug_mb_p = y_data_aug_mb
+
+    # 5. Save preprocess augmented motion blur data
+    path = "./data/traffic-signs-data/train_aug_mb_p.p"
+    save_augmented_data(X_data_aug_mb_p, y_data_aug_mb_p, path)
+
+    return X_data_aug_mb_p, y_data_aug_mb_p
+
+def load_default_data():
+    # default data path
+    training_file = "./data/traffic-signs-data/train.p"
+    validation_file = "./data/traffic-signs-data/valid.p"
+    testing_file = "./data/traffic-signs-data/test.p"
+
+    with open(training_file, mode='rb') as f:
+        train = pickle.load(f)
+    with open(validation_file, mode='rb') as f:
+        valid = pickle.load(f)
+    with open(testing_file, mode='rb') as f:
+        test = pickle.load(f)
+
+    X_train, y_train = train['features'], train['labels']
+    X_valid, y_valid = valid['features'], valid['labels']
+    X_test, y_test = test['features'], test['labels']
+
+    return X_train, y_train, X_valid, y_valid, X_test, y_test
+
+
+
+
+def train():
+    # Load the Data
+    X_train, y_train, X_valid, y_valid, X_test, y_test = load_default_data()
+
+    # preprocess original TRAIN DATA
+    X_train_p = pre_processing(X_train)
+    y_train_p = y_train
+
+
+    # Augmentation + Preprocess on TRAIN DATA
+    X_train_aug_p, y_train_aug_p = preprocessDataAugmentation(X_train, y_train)
+
+    # Augmentation + Motion_blur + Preprocess on TRAIN DATA
+    X_train_aug_mb_p, y_train_aug_mb_p = preprocessDataAugmentationMotionBlur(X_train, y_train)
+
+    # Concate Augmentation + Motion_blur with original processed TRAIN DATA
     X_train_p = np.concatenate((X_train_p, X_train_aug_p, X_train_aug_mb_p), axis=0)
     y_train_p = np.concatenate((y_train_p, y_train_aug_p, y_train_aug_mb_p), axis=0)
 
-    return
 
-
-
-
-def train(X_train, y_train):
     # Shuffle Data
-    X_train, y_train = shuffle(X_train, y_train)
+    X_train_p, y_train_p = shuffle(X_train_p, y_train_p)
 
     # Init Var
     global best_validation_accuracy
