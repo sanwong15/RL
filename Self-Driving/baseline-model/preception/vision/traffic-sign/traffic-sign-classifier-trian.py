@@ -1,3 +1,10 @@
+'''
+This is a simple CNN (MNIST structure)
+- Allows Train and Test
+'''
+
+
+
 import numpy as np
 import tensorflow as tf
 import time
@@ -5,6 +12,8 @@ import pickle
 from sklearn.utils import shuffle
 
 # Reference: https://www.tensorflow.org/versions/r0.11/tutorials/mnist/pros/index.html#deep-mnist-for-experts
+
+f = open('trafficsign', 'w')
 
 # Import and read training and test data
 training_file = "traffic-sign-data/train.p"
@@ -20,6 +29,12 @@ X_test, y_test = test['features'], test['labels']
 
 # Shuffle training examples
 X_train, y_train = shuffle(X_train, y_train)
+
+# Optional (Image Normalization)
+X_train_norm = (X_train - X_train.mean()) / (np.max(X_train) - np.min(X_train))
+X_test_norm = (X_test - X_test.mean()) / (np.max(X_test) - np.min(X_test))
+X_train = X_train_norm
+X_test = X_test_norm
 
 n_train = len(X_train)
 n_test = len(X_test)
@@ -42,6 +57,8 @@ dropout = 0.75
 anneal_mod_frequency = 15
 annealing_rate = 0.9
 print_accuracy_mod_frequency = 5
+
+
 
 
 
@@ -201,3 +218,5 @@ with tf.Session() as sess:
     print("Training epochs: ", training_epochs)
     print("Batch size: ", batch_size)
     print("Dropout: ", dropout)
+
+f.close()
