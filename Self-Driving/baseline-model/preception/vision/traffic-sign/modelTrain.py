@@ -5,13 +5,7 @@ from dataAugmentation import augmentation, motion_blue, save_augmented_data
 from imagePreprocess import pre_processing_single_img, pre_processing
 
 
-def setTrainGraph(train_X, train_y, apply_dropout = True):
-    # Create placeholders
-    x = tf.placeholder(tf.float32, (None, 32, 32, 1))
-    y = tf.placeholder(tf.int32, (None))
-    one_hot_y = tf.one_hot(y, n_classes)
-    apply_dropout = tf.placeholder(tf.bool)
-
+def setTrainPipeline(X_train, y_train, apply_dropout = True):
     rate = 0.001
     mu = 0
     sigma = 0.1
@@ -32,7 +26,7 @@ def setTrainGraph(train_X, train_y, apply_dropout = True):
     ]
 
 
-    logits = LeNet(x, weights, biases, apply_dropout)
+    logits = LeNet(X_train, weights, biases, apply_dropout)
     cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits, one_hot_y)
     loss_operation = tf.reduce_mean(cross_entropy)
 
@@ -121,6 +115,16 @@ def load_default_data():
 
 
 def train():
+    # Init
+    global best_validation_accuracy
+    best_validation_accuracy = 0.0
+
+    # Create placeholders
+    x = tf.placeholder(tf.float32, (None, 32, 32, 1))
+    y = tf.placeholder(tf.int32, (None))
+    one_hot_y = tf.one_hot(y, n_classes)
+    apply_dropout = tf.placeholder(tf.bool)
+
     # Load the Data
     X_train, y_train, X_valid, y_valid, X_test, y_test = load_default_data()
 
@@ -143,9 +147,7 @@ def train():
     # Shuffle Data
     X_train_p, y_train_p = shuffle(X_train_p, y_train_p)
 
-    # Init Var
-    global best_validation_accuracy
-    best_validation_accuracy = 0.0
+
 
 
     # Run Model Parameters
@@ -157,6 +159,8 @@ def train():
     accuracy_operation = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     saver = tf.train.Saver()
 
+
+    # TRAIN
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         # saver.restore(sess, tf.train.latest_checkpoint('.'))
@@ -183,3 +187,22 @@ def train():
                 best_validation_accuracy = validation_accuracy
                 saver.save(sess, './lenet11')
                 print("Model saved")
+
+
+    # Compute Accuracy
+
+    with tf.Session() as sess:
+        # saver.restore(sess, tf.train.latest_checkpoint('.'))
+        saver.restore(sess, './lenet11')
+
+        training_accuracy = evaluate(X_train_p, y_train_p)
+        print("Training Accuracy = {:.3f}".format(training_accuracy))
+        validation_accuracy = evaluate(X_valid_p, y_valid_p)
+        print("Validation Accuracy = {:.3f}".format(validation_accuracy))
+
+        test_accuracy = evaluate(X_test_p, y_test_p)
+        print("Test Accuracy = {:.3f}".format(test_accuracy))
+
+        # metrics
+        y_p = tf.argmax(logits, 1)
+        y_pred = sess.run(y_p, feed_dict={x: X_test_p, y: y_test_p, apply_dropout: False})
