@@ -3,9 +3,17 @@ from LeNetArch import LeNet
 from sklearn.utils import shuffle
 from dataAugmentation import augmentation, motion_blue, save_augmented_data
 from imagePreprocess import pre_processing_single_img, pre_processing
+from sklearn import metrics
+import seaborn as sn
 
+def setTrainPipeline(X_train, one_hot_y, apply_dropout):
+    # Train Pipeline: (1) Take in Tensorflow placeholder (contain training data), (2) pass it through the model (3) Calculate cross-entropy (4)
+    # Expecting X_train is the Tensorflow placeholder
+    # Expect the y_train already been transformed into one-hot array placeholder to calculate cross-entropy
+    # Expecting apply_dropout is the Tensorflow placeholder
 
-def setTrainPipeline(X_train, y_train, apply_dropout = True):
+    # Return: training_operation (i.e: output of optimizer minimization
+
     rate = 0.001
     mu = 0
     sigma = 0.1
@@ -36,7 +44,7 @@ def setTrainPipeline(X_train, y_train, apply_dropout = True):
     optimizer = tf.train.AdamOptimizer(learning_rate = rate)
     training_operation = optimizer.minimize(loss)
 
-    return training_operation
+    return logits, cross_entropy, loss_operation, training_operation
 
 
 def evaluate(X_data, y_data):
@@ -119,12 +127,6 @@ def train():
     global best_validation_accuracy
     best_validation_accuracy = 0.0
 
-    # Create placeholders
-    x = tf.placeholder(tf.float32, (None, 32, 32, 1))
-    y = tf.placeholder(tf.int32, (None))
-    one_hot_y = tf.one_hot(y, n_classes)
-    apply_dropout = tf.placeholder(tf.bool)
-
     # Load the Data
     X_train, y_train, X_valid, y_valid, X_test, y_test = load_default_data()
 
@@ -144,16 +146,15 @@ def train():
     y_train_p = np.concatenate((y_train_p, y_train_aug_p, y_train_aug_mb_p), axis=0)
 
 
-    # Shuffle Data
-    X_train_p, y_train_p = shuffle(X_train_p, y_train_p)
-
-
-
-
-    # Run Model Parameters
-    EPOCHS = 10
-    BATCH_SIZE = 128
-
+    # TrainPipeline (input placeholder: x, one_hot_y, apple_dropout)
+    # (1) Create placeholders
+    x = tf.placeholder(tf.float32, (None, 32, 32, 1))
+    y = tf.placeholder(tf.int32, (None))
+    one_hot_y = tf.one_hot(y, n_classes)
+    apply_dropout = tf.placeholder(tf.bool)
+    # (2) Pipeline
+    logits, cross_entropy, loss_operation, training_operation = setTrainPipeline(x, one_hot_y, apply_dropout)
+    # training_operation will be used in the training sess
 
     correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(one_hot_y, 1))
     accuracy_operation = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -161,8 +162,16 @@ def train():
 
 
     # TRAIN
+    # (1) TRAINING Parameters
+    EPOCHS = 10
+    BATCH_SIZE = 128
+
+    # (2) Start session for training
     with tf.Session() as sess:
+        print("Training Session Starting...")
+        print("Initializing Global Variables ... ")
         sess.run(tf.global_variables_initializer())
+        print("Global Variables Initialization done")
         # saver.restore(sess, tf.train.latest_checkpoint('.'))
         # saver.restore(sess, './lenet11')
 
@@ -206,3 +215,14 @@ def train():
         # metrics
         y_p = tf.argmax(logits, 1)
         y_pred = sess.run(y_p, feed_dict={x: X_test_p, y: y_test_p, apply_dropout: False})
+
+    print ("test accuracy:", test_accuracy)
+    y_true = y_test_p
+    print ("Precision", metrics.precision_score(y_true, y_pred, average='macro'))
+    print ("Recall", metrics.recall_score(y_true, y_pred, average='micro'))
+    print ("f1_score", metrics.f1_score(y_true, y_pred, average='weighted'))
+    print ("Confusion_matrix")
+    cm = metrics.confusion_matrix(y_true, y_pred)
+    print (cm)
+    # Save the confusion matrix in a csv file:
+    np.savetxt("cm.csv", cm, delimiter=",")

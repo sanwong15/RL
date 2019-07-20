@@ -3,10 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="01a411c6-1014-4e23-824c-ac41b4710680" name="Default Changelist" comment="">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <change afterPath="$PROJECT_DIR$/Self-Driving/baseline-model/preception/vision/traffic-sign/traffic-sign-classifier.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Self-Driving/baseline-model/preception/vision/lanelines/lanelinefinder.py" beforeDir="false" afterPath="$PROJECT_DIR$/Self-Driving/baseline-model/preception/vision/lanelines/lanelinefinder.py" afterDir="false" />
 =======
+=======
+>>>>>>> Stashed changes
       <change beforePath="$PROJECT_DIR$/Self-Driving/reference/deepdrive" beforeDir="false" afterPath="$PROJECT_DIR$/Self-Driving/reference/deepdrive" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Self-Driving/reference/deepdrive/gym_deepdrive/envs/deepdrive_gym_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/Self-Driving/reference/deepdrive/gym_deepdrive/envs/deepdrive_gym_env.py" afterDir="false" />
 >>>>>>> Stashed changes
