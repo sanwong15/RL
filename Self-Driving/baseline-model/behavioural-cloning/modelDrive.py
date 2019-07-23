@@ -38,6 +38,18 @@ def telemetry(sid, data):
     # Get Current Image of the Center Camera
     imgString = data["image"]
 
+    # Get Image from imgString
+    image = Image.open(BytesIO(base64.b64decode(imgString)))
+
+    # Store image as np array
+    image_array = np.asarray(image)
+
+    # Transformed Image Array
+    transformed_image_array = image_array[None, :, :, :]
+
+
+
+
     
 
 
