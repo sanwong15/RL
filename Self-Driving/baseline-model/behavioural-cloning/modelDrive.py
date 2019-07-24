@@ -38,6 +38,7 @@ def telemetry(sid, data):
     # Get Current Image of the Center Camera
     imgString = data["image"]
 
+
     # Get Image from imgString
     image = Image.open(BytesIO(base64.b64decode(imgString)))
 
@@ -97,13 +98,6 @@ if __name__ == '__main__':
 
     # deploy as an eventlet WSGI server
     eventlet.wsgi.server(eventlet.listen(('', 4567)), app)
-
-
-
-
-
-
-    
 
 
 
