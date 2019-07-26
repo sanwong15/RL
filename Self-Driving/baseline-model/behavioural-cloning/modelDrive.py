@@ -21,6 +21,9 @@ tf.python.control_flow_ops = tf
 from ..env import carla_env2
 
 
+from carla_env2 import CarlaEnv
+
+
 sio = socketio.Server()
 app = Flask(__name__)
 model = None
