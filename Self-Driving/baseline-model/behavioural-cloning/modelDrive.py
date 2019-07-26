@@ -18,6 +18,8 @@ from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_a
 import tensorflow as tf
 tf.python.control_flow_ops = tf
 
+from ..env import carla_env2
+
 
 sio = socketio.Server()
 app = Flask(__name__)
@@ -85,6 +87,8 @@ if __name__ == '__main__':
         #   model = model_from_json(json.loads(jfile.read()))\
         #
         # instead.
+
+        # Restore trained weight to the model
         model = model_from_json(jfile.read())
 
 
