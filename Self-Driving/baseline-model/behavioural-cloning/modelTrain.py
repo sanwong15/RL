@@ -28,13 +28,14 @@ from keras.models import model_from_json
 import tensorflow as tf
 
 
-def run():
+def run(csv_filepath):
     # Step 1: Sample Gathering (define empty sample array)
     samples = []
 
     # Step 2: Add sample from data
-    samples = add_to_samples('data-udacity/driving_log.csv', samples)
-    samples = add_to_samples('data-recovery-annie/driving_log.csv', samples)
+    #samples = add_to_samples('data-udacity/driving_log.csv', samples)
+    #samples = add_to_samples('data-recovery-annie/driving_log.csv', samples)
+    samples = add_to_samples(csv_filepath, samples)
     samples = samples[1:]
 
     print("Length of samples: ", len(samples))
